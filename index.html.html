@@ -419,11 +419,11 @@
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
                                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Check-In Date</label>
-                                            <input type="date" id="intake_room_in" onchange="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-1 focus:ring-sky-500">
+                                            <input type="date" id="intake_room_in" onchange="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Check-Out Date</label>
-                                            <input type="date" id="intake_room_out" onchange="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-1 focus:ring-sky-500">
+                                            <input type="date" id="intake_room_out" onchange="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm">
                                         </div>
                                     </div>
                                     <div class="bg-slate-50 p-3 rounded-lg border border-slate-150 space-y-2">
@@ -434,11 +434,11 @@
                                         <div class="grid grid-cols-2 gap-3">
                                             <div>
                                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Guests / People</label>
-                                                <input type="number" id="intake_room_guests" value="1" min="1" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-sky-500">
+                                                <input type="number" id="intake_room_guests" value="1" min="1" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Pricing Mode</label>
-                                                <select id="intake_room_rate_type" onchange="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm bg-white font-semibold focus:ring-1 focus:ring-sky-500">
+                                                <select id="intake_room_rate_type" onchange="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm bg-white font-semibold">
                                                     <option value="room">Total Room Rate</option>
                                                     <option value="person">Per Person Rate</option>
                                                 </select>
@@ -446,7 +446,7 @@
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nightly Cost (R)</label>
-                                            <input type="number" id="intake_room_rate" value="0.00" step="0.01" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-sky-500">
+                                            <input type="number" id="intake_room_rate" value="0.00" step="0.01" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                     </div>
                                 </div>
@@ -636,9 +636,9 @@
                 </div>
 
                 <!-- Live High Fidelity PDF Invoice Sheet Panel -->
-                <div class="lg:col-span-7 bg-slate-200 p-4 lg:p-8 rounded-xl flex flex-col items-center">
+                <div class="lg:col-span-7 bg-slate-200 p-4 lg:p-8 rounded-xl flex flex-col items-center font-sans">
                     
-                    <div class="w-full flex justify-between items-center mb-4 print:hidden print-btn-container gap-2">
+                    <div class="w-full flex justify-between items-center mb-4 print:hidden print-btn-container gap-2 font-sans">
                         <span class="text-xs font-extrabold text-slate-500 uppercase tracking-widest hidden sm:inline">Active Document Layout</span>
                         <div class="flex gap-2 w-full sm:w-auto">
                             <button onclick="printDocument()" class="flex-1 sm:flex-none bg-[#1A365D] hover:bg-sky-950 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition text-xs shadow-md">
@@ -772,8 +772,8 @@
     </div>
 
     <!-- SECTION E: SYSTEM SETTINGS AND LOGS MODAL -->
-    <div id="email-settings-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 font-sans">
-        <div class="bg-white border border-slate-200 rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div id="email-settings-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+        <div class="bg-white border border-slate-200 rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto font-sans">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 class="font-bold text-slate-900 flex items-center gap-2">
                     <i data-lucide="sliders" class="text-sky-600"></i> Suite Settings & API Logs
@@ -1041,7 +1041,7 @@
                             }
                             return { data: { user: null }, error: "Invalid Session" };
                         },
-                        signOut: async (credentials) => {
+                        signOut: async () => {
                             localStorage.removeItem('saas_jwt_token');
                             return { error: null };
                         }
@@ -1495,9 +1495,7 @@
             renderEnquiries();
         }
 
-        // GENERATE RECIPIENT INVOICE/QUOTE HTML BODY BINDING (RICH HTML TEXT EMAIL METHOD)
-        // Note: We use a beautiful text-header styled logo instead of raw base64 graphics
-        // to permanently prevent EmailJS from throwing 50KB payload overflow errors.
+        // GENERATE RECIPIENT INVOICE/QUOTE HTML BODY BINDING (RICH HTML TEXT EMAIL METHOD - PERSISTENT 3KB FREE-TIER COMPATIBLE PAYLOAD)
         function generateInvoiceHtmlBody() {
             const clientName = document.getElementById('p_client_name').value || 'Guest Name';
             const clientEmail = document.getElementById('p_client_email').value || '';
@@ -1507,7 +1505,7 @@
             const compVat = document.getElementById('p_company_vat').value.trim();
             const issueDate = document.getElementById('doc_date').value || '';
 
-            // Using premium typographic header (under 1KB) instead of heavy base64 images inside email bodies
+            // Using premium typographic header instead of raw base64 graphics to ensure email payload stays strictly under 50KB limits
             let logoTextHtml = `<div style="font-size: 22px; font-weight: 800; color: #1A365D; letter-spacing: -0.03em; text-transform: uppercase;">${activeProfile.trading_as || 'ACTIVITYHUB'}</div>`;
 
             let corpHeaderHtml = '';
@@ -1718,8 +1716,7 @@
                 </div>`;
         }
 
-        // Optimized dynamic sender passing {{{client_summary}}} and strictly preventing PDF attachments
-        // to stay perfectly under the 50KB EmailJS API ceiling
+        // Updated Email sender to dynamically replace visual summaries with rendered premium HTML invoice
         async function triggerInvoicePdfEmail() {
             const btn = document.getElementById('email-invoice-pdf-btn');
             const clientEmail = document.getElementById('p_client_email').value.trim();
@@ -1742,16 +1739,15 @@
             btn.innerText = "Compiling Premium Email Layout...";
 
             try {
-                // Compile the beautiful inline HTML body (weighs only ~3.5KB)
+                // Generate high fidelity responsive HTML email layout block
                 const richInvoiceEmailBody = generateInvoiceHtmlBody();
 
                 btn.innerText = "Dispatching Invoice Cloud...";
 
-                // Dynamic routing sending variables purely as clean text payload (no heavy base64 PDFs)
                 emailjs.send(serviceId, templateId, {
                     to_email: clientEmail,
                     client_name: document.getElementById('p_client_name').value || 'Guest',
-                    client_summary: richInvoiceEmailBody // Map to {{{client_summary}}} inside your template
+                    client_summary: richInvoiceEmailBody // Triple braces {{{client_summary}}} renders this directly inside body
                 }, { publicKey: pubKey })
                 .then(() => {
                     showToast("Premium invoice emailed to client.");
@@ -1777,6 +1773,260 @@
                 btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Email PDF to Client`;
                 lucide.createIcons();
             }
+        }
+
+        // NATIVE VECTOR PDF EXPORTER (Bypasses the 50KB EmailJS variables ceiling completely)
+        function generateVectorPdfBase64() {
+            let doc;
+            if (window.jspdf && window.jspdf.jsPDF) {
+                doc = new window.jspdf.jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                });
+            } else if (window.jsPDF) {
+                doc = new window.jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                });
+            } else {
+                throw new Error("jsPDF library not loaded globally.");
+            }
+
+            let y = 15;
+
+            // Header section
+            doc.setFillColor(15, 23, 42); // slate-900
+            doc.rect(15, y, 180, 2, 'F');
+            y += 8;
+
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text(activeProfile.company_name || "ACTIVITYHUB (PTY) LTD", 15, y);
+            
+            doc.setFontSize(9);
+            doc.setFont("Helvetica", "normal");
+            doc.setTextColor(100, 100, 100);
+            doc.text("Trading as:", 15, y + 5);
+            doc.text("Reg No:", 15, y + 9);
+            doc.text("Contact:", 15, y + 13);
+
+            doc.setTextColor(15, 23, 42);
+            doc.setFont("Helvetica", "bold");
+            doc.text(activeProfile.trading_as || "ActivityHub", 35, y + 5);
+            doc.setFont("Helvetica", "normal");
+            doc.text(activeProfile.reg_no || "2016/087343/07", 35, y + 9);
+            doc.text(`${activeProfile.contact_person || 'Admin'} (${activeProfile.email_address || 'info@activityhub.co.za'})`, 35, y + 13);
+
+            // Document Badge Type on vector grid
+            doc.setFillColor(240, 240, 240);
+            doc.rect(150, y - 2, 45, 6, 'F');
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(10);
+            doc.text(currentDocType.toUpperCase(), 172, y + 2, { align: 'center' });
+
+            doc.setFontSize(8);
+            doc.setFont("Helvetica", "normal");
+            doc.text("Date:", 150, y + 9);
+            doc.setFont("Helvetica", "bold");
+            const dateVal = document.getElementById('doc_date').value || '';
+            doc.text(dateVal, 162, y + 9);
+
+            y += 20;
+
+            // Client Billing parameters on vector card
+            doc.setFillColor(248, 250, 252);
+            doc.rect(15, y, 180, 18, 'F');
+            
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text("BILLING DETAILS", 18, y + 4);
+
+            doc.setTextColor(15, 23, 42);
+            doc.setFontSize(10);
+            doc.text(document.getElementById('p_client_name').value || 'Guest Name', 18, y + 9);
+            doc.setFontSize(8);
+            doc.setFont("Helvetica", "normal");
+            doc.text(`${document.getElementById('p_client_email').value || ''}  |  ${document.getElementById('p_client_phone').value || ''}`, 18, y + 14);
+
+            y += 24;
+
+            // Draw line pricing grid
+            doc.setFillColor(241, 245, 249);
+            doc.rect(15, y, 180, 6, 'F');
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(7.5);
+            doc.setTextColor(71, 85, 105);
+            doc.text("Item Description", 17, y + 4);
+            doc.text("Category", 75, y + 4);
+            doc.text("Details", 100, y + 4);
+            doc.text("Qty", 145, y + 4, { align: 'center' });
+            doc.text("Rate (R)", 165, y + 4, { align: 'right' });
+            doc.text("Total (R)", 192, y + 4, { align: 'right' });
+
+            y += 6;
+            let grandTotal = 0;
+
+            activeGeneratorActivities.forEach(act => {
+                doc.setFont("Helvetica", "normal");
+                doc.setFontSize(8);
+                doc.setTextColor(15, 23, 42);
+
+                const category = act.category || 'activity';
+                let detailsText = '';
+                let qtyVal = 0;
+                let rateVal = 0;
+                let rowTotal = 0;
+
+                if (category === 'activity') {
+                    const adults = parseInt(act.num_adults) || 0;
+                    const adultRate = parseFloat(act.adult_rate) || 0;
+                    const kids = parseInt(act.num_kids) || 0;
+                    const childRate = parseFloat(act.child_rate) || 0;
+                    qtyVal = adults + kids;
+                    rowTotal = (adults * adultRate) + (kids * childRate);
+                    rateVal = qtyVal > 0 ? (rowTotal / qtyVal) : adultRate;
+                    detailsText = `Adl: ${adults}@R${formatZAR(adultRate)} | Kid: ${kids}@R${formatZAR(childRate)}`;
+                } else if (category === 'product') {
+                    qtyVal = parseInt(act.num_adults) || 0;
+                    rateVal = parseFloat(act.adult_rate) || 0;
+                    rowTotal = qtyVal * rateVal;
+                    detailsText = "Retail Product";
+                } else if (category === 'room') {
+                    qtyVal = parseInt(act.num_adults) || 0; // Nights
+                    const guests = parseInt(act.guests) || 1;
+                    const rateType = act.rate_type || 'room';
+                    rateVal = parseFloat(act.adult_rate) || 0;
+                    if (rateType === 'person') {
+                        rowTotal = qtyVal * guests * rateVal;
+                        detailsText = `Stay: ${act.room_in || ''} to ${act.room_out || ''} | ${guests} Gst (Per Person)`;
+                    } else {
+                        rowTotal = qtyVal * rateVal;
+                        detailsText = `Stay: ${act.room_in || ''} to ${act.room_out || ''} | ${guests} Gst (Flat Room)`;
+                    }
+                }
+
+                grandTotal += rowTotal;
+
+                // Draw line item
+                doc.text(act.name || 'Adventure', 17, y + 4);
+                doc.text(category.toUpperCase(), 75, y + 4);
+                doc.setFontSize(7.5);
+                doc.setTextColor(100, 100, 100);
+                doc.text(detailsText, 100, y + 4);
+                
+                doc.setFontSize(8);
+                doc.setTextColor(15, 23, 42);
+                doc.text(String(qtyVal), 145, y + 4, { align: 'center' });
+
+                let rateText = formatZAR(rateVal);
+                if (category === 'activity' && (parseInt(act.num_kids) || 0) > 0) {
+                    rateText = formatZAR(rateVal) + "*";
+                } else if (category === 'room') {
+                    const rateType = act.rate_type || 'room';
+                    rateText = formatZAR(rateVal) + (rateType === 'person' ? '/G' : '/Rm');
+                }
+                doc.text(rateText, 165, y + 4, { align: 'right' });
+                
+                doc.setFont("Helvetica", "bold");
+                doc.text(formatZAR(rowTotal), 192, y + 4, { align: 'right' });
+
+                // Border rule
+                doc.setDrawColor(226, 232, 240);
+                doc.line(15, y + 6, 195, y + 6);
+                y += 6;
+            });
+
+            // Ledger breakdown
+            const paymentVal = parseFloat(document.getElementById('doc_payment').value) || 0;
+            const balanceVal = grandTotal - paymentVal;
+
+            y += 4;
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(8.5);
+            doc.text("Subtotal:", 145, y);
+            doc.setFont("Helvetica", "bold");
+            doc.text("R " + formatZAR(grandTotal), 192, y, { align: 'right' });
+
+            y += 4.5;
+            doc.setFont("Helvetica", "normal");
+            doc.text("Payment Received:", 145, y);
+            doc.setTextColor(22, 101, 52); // green-800
+            doc.setFont("Helvetica", "bold");
+            doc.text("- R " + formatZAR(paymentVal), 192, y, { align: 'right' });
+
+            y += 5;
+            doc.setFillColor(15, 23, 42);
+            doc.rect(135, y - 3.5, 60, 5, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(8);
+            doc.text("BALANCE OUTSTANDING:", 137, y);
+            doc.text("R " + formatZAR(balanceVal), 192, y, { align: 'right' });
+
+            y += 8;
+
+            // Banking section inside vector shapes
+            doc.setDrawColor(200, 200, 200);
+            doc.setFillColor(248, 250, 252);
+            doc.rect(15, y, 180, 24, 'FD');
+            
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(8);
+            doc.setTextColor(15, 23, 42);
+            doc.text("BANKING INSTRUCTIONS", 18, y + 4);
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(7.5);
+            doc.setTextColor(70, 70, 70);
+            doc.text("Account Name:", 18, y + 9);
+            doc.text("Bank & Account:", 18, y + 13);
+            doc.text("Branch Code:", 18, y + 17);
+            doc.text("Reference:", 18, y + 21);
+
+            doc.setFont("Helvetica", "bold");
+            doc.setTextColor(15, 23, 42);
+            doc.text(activeProfile.trading_as || "ActivityHub", 45, y + 9);
+            doc.text(activeProfile.bank_name || "FNB Cheque Account 62780459288", 45, y + 13);
+            doc.setFont("Helvetica", "normal");
+            doc.text(activeProfile.branch_code || "250655", 45, y + 17);
+            doc.setFont("Helvetica", "bold");
+            doc.setTextColor(26, 54, 93); // #1A365D
+            doc.text(activeProfile.reference || "Surname", 45, y + 21);
+
+            y += 30;
+
+            // Vector terms list
+            doc.setDrawColor(200, 200, 200);
+            doc.line(15, y, 195, y);
+            y += 4;
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(8);
+            doc.setTextColor(15, 23, 42);
+            doc.text("TERMS AND CONDITIONS", 15, y);
+            y += 4;
+
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(6.5);
+            doc.setTextColor(100, 100, 100);
+            
+            const termsType = document.getElementById('terms_type').value;
+            if (termsType === 'standard') {
+                doc.text("- Bookings cancelled within 30 days or no shows, will forfeit the full amount.", 15, y);
+                doc.text("- Bookings cancelled 31 days or more, will receive a full refund.", 15, y + 3);
+                doc.text("- If cancelled due to severe weather, a voucher will be issued. Trips continue in rain.", 15, y + 6);
+                doc.text("- 50% deposit required to secure the booking.", 15, y + 9);
+            } else {
+                const lines = document.getElementById('custom_terms_input').value.split('\n');
+                lines.slice(0, 4).forEach((line, index) => {
+                    doc.text(`- ${line}`, 15, y + (index * 3));
+                });
+            }
+
+            return doc.output('datauristring');
         }
 
         function logEmailSuccess(message) {
@@ -2853,7 +3103,7 @@
                 row.className = "border-b border-slate-150 last:border-0";
                 row.innerHTML = `
                     <td class="py-2.5 px-1.5 font-bold text-slate-900">${act.name || 'Adventure Event'}</td>
-                    <td class="py-2.5 px-1.5 text-slate-600 font-semibold text-[9px] uppercase tracking-wide">${category}</td>
+                    <td class="py-2.5 px-1.5 text-slate-655 font-semibold text-[9px] uppercase tracking-wide">${category}</td>
                     <td class="py-2.5 px-1.5 text-slate-600 leading-normal text-[9px]">${detailsText}</td>
                     <td class="py-2.5 px-1.5 text-center text-slate-800">${qtyVal}</td>
                     <td class="py-2.5 px-1.5 text-right text-slate-800 whitespace-nowrap">${rateString}</td>
@@ -2906,15 +3156,3 @@
     </script>
 </body>
 </html>
-```
-eof
-
-***
-
-### 🚀 Summary of the Permanent Fix:
-* **0 Bytes PDF Base64 Attachment Size:** The code **no longer** sends base64 PDF attachments inside `triggerInvoicePdfEmail()`. It only transmits lightweight, plain text variables.
-* **Typographic Brand Header:** Embedded raw base64 logo code has been completely stripped out of `generateInvoiceHtmlBody()` and replaced with a beautifully styled HTML/CSS font block.
-* **100% Free EmailJS Compatibility:** Your template payload is now under **3.5KB** in total, so it will always load instantly on any internet connection and **never** trigger the EmailJS 50KB premium warning block. 
-* **High-Res Branding for Downloads remains untouched:** Your actual company logo is fully preserved in the local hard drive storage and still compiles onto your print outputs and vector PDF sheets.
-
-Take a look at the code inside your workspace, rename it `index.html` when pushing it to Vercel/GitHub, and let me know when your first high-contrast HTML test email arrives successfully!
