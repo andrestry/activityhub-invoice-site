@@ -147,7 +147,7 @@
             </p>
 
             <div class="flex flex-wrap justify-center gap-4 mt-8">
-                <button onclick="openAuthModal('signup')" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-xl text-sm transition shadow-lg shadow-sky-500/20">
+                <button onclick="openAuthModal('signup')" class="bg-sky-50 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-xl text-sm transition shadow-lg shadow-sky-500/20">
                     Get Started Free
                 </button>
                 <a href="#pricing-block" class="bg-slate-800/60 hover:bg-slate-700 text-slate-300 py-3 px-8 rounded-xl text-sm font-semibold border border-slate-700/50 transition">
@@ -539,12 +539,13 @@
                         </div>
                     </div>
 
-                    <!-- Invoice vs Quote Format Selector -->
+                    <!-- Document Format Selector (Invoice, Quote, Statement) -->
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Document Format Type</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="setDocType('Invoice')" id="btn-type-invoice" class="bg-[#1A365D] text-white py-2 rounded-lg font-bold text-sm shadow-md">Invoice</button>
-                            <button onclick="setDocType('Quote')" id="btn-type-quote" class="bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 rounded-lg font-bold text-sm transition border border-slate-200">Quote</button>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button onclick="setDocType('Invoice')" id="btn-type-invoice" class="bg-[#1A365D] text-white py-2 rounded-lg font-bold text-xs shadow-md">Invoice</button>
+                            <button onclick="setDocType('Quote')" id="btn-type-quote" class="bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 rounded-lg font-bold text-xs transition border border-slate-200">Quote</button>
+                            <button onclick="setDocType('Statement')" id="btn-type-statement" class="bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 rounded-lg font-bold text-xs transition border border-slate-200">Statement</button>
                         </div>
                     </div>
 
@@ -620,14 +621,37 @@
                             </div>
                         </div>
 
-                        <!-- Terms Selector -->
-                        <div class="border-t border-slate-100 pt-3">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Terms & Conditions Type</label>
+                        <!-- Terms Selector & PRESETS MANAGER (Tenant-Isolated, Syncs to Supabase) -->
+                        <div class="border-t border-slate-100 pt-3 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">Terms & Conditions Type</label>
+                                <button onclick="togglePresetManager()" class="text-xs font-bold text-sky-700 flex items-center gap-1 hover:text-sky-900">
+                                    <i data-lucide="folder-heart" class="w-3.5 h-3.5"></i> Presets Library
+                                </button>
+                            </div>
+
+                            <!-- Terms Preset Manager Drawer -->
+                            <div id="presets-manager-drawer" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                                <span class="text-[10px] font-extrabold uppercase text-slate-500 block">Terms Presets Manager</span>
+                                
+                                <div class="flex gap-1.5">
+                                    <input type="text" id="preset_name_input" placeholder="e.g. Guided Tours Policy" class="flex-1 border border-slate-200 rounded p-1.5 text-xs outline-none bg-white">
+                                    <button onclick="saveCurrentTermsAsPreset()" class="bg-[#1A365D] hover:bg-sky-850 text-white text-xs px-3 font-semibold rounded transition">
+                                        Save
+                                    </button>
+                                </div>
+
+                                <div id="presets-quick-selector" class="flex flex-wrap gap-1.5 pt-1.5 border-t border-slate-200">
+                                    <!-- Dynamic chips loaded from cloud -->
+                                    <span class="text-[10px] text-slate-400 italic">No saved presets yet. Type a title and save current terms.</span>
+                                </div>
+                            </div>
+
                             <select id="terms_type" onchange="toggleTermsType()" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm bg-white font-semibold">
                                 <option value="standard">Standard ActivityHub Terms</option>
                                 <option value="custom">Custom Terms and Notes</option>
                             </select>
-                            <textarea id="custom_terms_input" oninput="updatePreview()" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm mt-2 hidden" rows="4" placeholder="Enter custom terms or instructions here (one per line)..."></textarea>
+                            <textarea id="custom_terms_input" oninput="updatePreview(); autoSaveCustomTerms(this.value)" class="w-full border border-slate-200 rounded-lg p-2.5 text-sm mt-2 hidden" rows="4" placeholder="Enter custom terms or instructions here (one per line)..."></textarea>
                         </div>
                     </div>
 
@@ -909,6 +933,10 @@
         let activeGeneratorEnquiryId = null;
         let activeGeneratorActivities = [];
 
+        // Terms Library & Isolation Parameters
+        let termsPresetsList = [];
+        let isPresetManagerOpen = false;
+
         // Helper to retrieve user isolated local key for cached assets
         function getUserLogoKey() {
             return activeUser ? `activityhub_logo_${activeUser.id}` : 'activityhub_logo';
@@ -1182,6 +1210,25 @@
                 activeProfile.emailjs_template = emailConfig.emailjs_template || '';
                 activeProfile.emailjs_invoice_template = emailConfig.emailjs_invoice_template || '';
 
+                // Load custom terms from isolated profile securely
+                const loadedCustomTerms = activeProfile.custom_terms || "";
+                document.getElementById('custom_terms_input').value = loadedCustomTerms;
+
+                // Load terms presets cleanly from Supabase cloud
+                termsPresetsList = [];
+                if (activeProfile.terms_presets) {
+                    try {
+                        termsPresetsList = typeof activeProfile.terms_presets === 'string'
+                            ? JSON.parse(activeProfile.terms_presets)
+                            : activeProfile.terms_presets;
+                    } catch (e) {
+                        console.warn("Presets parsing error: ", e);
+                    }
+                }
+                if (!Array.isArray(termsPresetsList)) {
+                    termsPresetsList = [];
+                }
+
                 // Hydrate branding configs inside forms
                 document.getElementById('nav-brand-title').innerText = activeProfile.company_name;
                 document.getElementById('pdf_comp_name').innerText = activeProfile.company_name;
@@ -1233,6 +1280,7 @@
                 adjustIntakeFormFields();
                 renderEnquiries();
                 checkWeeklyFollowupsDue();
+                renderTermsPresetsChips();
                 
                 if (enquiries.length > 0) {
                     loadToGenerator(enquiries[0].id);
@@ -1515,7 +1563,7 @@
             renderEnquiries();
         }
 
-        // GENERATE RECIPIENT INVOICE/QUOTE HTML BODY BINDING (RICH HTML TEXT EMAIL METHOD)
+        // GENERATE RECIPIENT INVOICE/QUOTE/STATEMENT HTML BODY BINDING (RICH HTML TEXT EMAIL METHOD)
         function generateInvoiceHtmlBody() {
             const clientName = document.getElementById('p_client_name').value || 'Guest Name';
             const clientEmail = document.getElementById('p_client_email').value || '';
@@ -1760,7 +1808,7 @@
                 // Generate high fidelity responsive HTML email layout block
                 const richInvoiceEmailBody = generateInvoiceHtmlBody();
 
-                btn.innerText = "Dispatching Invoice Cloud...";
+                btn.innerText = "Dispatching Document Cloud...";
 
                 emailjs.send(serviceId, templateId, {
                     to_email: clientEmail,
@@ -1768,8 +1816,8 @@
                     client_summary: richInvoiceEmailBody // Triple braces {{{client_summary}}} renders this directly inside body
                 }, { publicKey: pubKey })
                 .then(() => {
-                    showToast("Premium invoice emailed to client.");
-                    logEmailSuccess(`Invoice successfully delivered as inline HTML email to ${clientEmail}`);
+                    showToast("Premium document emailed to client.");
+                    logEmailSuccess(`Invoice/Quote/Statement successfully delivered as inline HTML email to ${clientEmail}`);
                     btn.disabled = false;
                     btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Email PDF to Client`;
                     lucide.createIcons();
@@ -1778,7 +1826,7 @@
                     console.error("EmailJS payload failed: ", err);
                     const errorDesc = err.text || err.message || JSON.stringify(err);
                     showToast("API dispatch failed: " + errorDesc);
-                    logEmailError(`Invoice HTML delivery failed to ${clientEmail}: ${errorDesc}`);
+                    logEmailError(`Document HTML delivery failed to ${clientEmail}: ${errorDesc}`);
                     btn.disabled = false;
                     btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Email PDF to Client`;
                     lucide.createIcons();
@@ -2107,6 +2155,119 @@
             }
         }
 
+        // Preset Library Drawer handlers
+        function togglePresetManager() {
+            const drawer = document.getElementById('presets-manager-drawer');
+            drawer.classList.toggle('hidden');
+            isPresetManagerOpen = !drawer.classList.contains('hidden');
+            if (isPresetManagerOpen) {
+                renderTermsPresetsChips();
+            }
+        }
+
+        async function saveCurrentTermsAsPreset() {
+            const presetName = document.getElementById('preset_name_input').value.trim();
+            const customTermsText = document.getElementById('custom_terms_input').value.trim();
+
+            if (!presetName) {
+                showToast("Please give your terms preset a name (e.g. Guided Tours Policy).");
+                return;
+            }
+            if (!customTermsText) {
+                showToast("Please add terms inside the custom text box first.");
+                return;
+            }
+
+            // Check duplicate preset names
+            const existingIdx = termsPresetsList.findIndex(p => p.name.toLowerCase() === presetName.toLowerCase());
+            if (existingIdx !== -1) {
+                termsPresetsList[existingIdx].terms = customTermsText;
+            } else {
+                termsPresetsList.push({
+                    name: presetName,
+                    terms: customTermsText
+                });
+            }
+
+            // Save presets array directly to Supabase cloud profile JSON property
+            try {
+                await supabaseClient.from('profiles').update({
+                    terms_presets: termsPresetsList
+                }, activeProfile.id);
+
+                activeProfile.terms_presets = termsPresetsList;
+                document.getElementById('preset_name_input').value = "";
+                renderTermsPresetsChips();
+                showToast(`Preset "${presetName}" saved to cloud library.`);
+            } catch (err) {
+                showToast("Save Preset error: " + err.message);
+            }
+        }
+
+        function loadPresetIntoWorkspace(presetIndex) {
+            const preset = termsPresetsList[presetIndex];
+            if (!preset) return;
+
+            document.getElementById('terms_type').value = 'custom';
+            document.getElementById('custom_terms_input').value = preset.terms;
+            document.getElementById('custom_terms_input').classList.remove('hidden');
+            
+            // Instantly auto-save loaded custom terms onto profile to secure isolation
+            autoSaveCustomTerms(preset.terms);
+            updatePreview();
+            showToast(`Applied preset: "${preset.name}"`);
+        }
+
+        async function deleteTermsPreset(presetIndex, event) {
+            event.stopPropagation(); // Prevent loading preset on chip selection
+            const preset = termsPresetsList[presetIndex];
+            if (!preset) return;
+
+            termsPresetsList.splice(presetIndex, 1);
+
+            try {
+                await supabaseClient.from('profiles').update({
+                    terms_presets: termsPresetsList
+                }, activeProfile.id);
+
+                activeProfile.terms_presets = termsPresetsList;
+                renderTermsPresetsChips();
+                showToast("Preset removed from library.");
+            } catch (err) {
+                showToast("Delete Preset error: " + err.message);
+            }
+        }
+
+        function renderTermsPresetsChips() {
+            const container = document.getElementById('presets-quick-selector');
+            if (termsPresetsList.length === 0) {
+                container.innerHTML = `<span class="text-[10px] text-slate-400 italic">No saved presets yet. Type a title and save current terms.</span>`;
+                return;
+            }
+
+            container.innerHTML = termsPresetsList.map((preset, idx) => `
+                <div onclick="loadPresetIntoWorkspace(${idx})" class="group cursor-pointer bg-white hover:bg-sky-50 text-[#1A365D] border border-slate-200 hover:border-sky-200 pl-2.5 pr-1 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 transition">
+                    <span>${preset.name}</span>
+                    <button onclick="deleteTermsPreset(${idx}, event)" class="p-0.5 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete Preset">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Auto persist custom terms to active tenant Supabase profile to keep absolute isolation
+        async function autoSaveCustomTerms(val) {
+            if (!activeProfile) return;
+            activeProfile.custom_terms = val;
+            try {
+                await supabaseClient.from('profiles').update({ custom_terms: val }, activeProfile.id);
+            } catch (err) {
+                console.warn("Custom terms cloud sync skipped", err);
+            }
+        }
+
         async function saveEmailSettings() {
             try {
                 const tradingAs = document.getElementById('cfg_trading_as').value.trim();
@@ -2114,7 +2275,8 @@
                 const contactPerson = document.getElementById('cfg_contact').value.trim();
                 const businessEmail = document.getElementById('cfg_email').value.trim();
                 const bankInfo = document.getElementById('cfg_bank_acc').value.trim() + "|" + document.getElementById('cfg_branch').value.trim();
-                
+                const currentCustomTermsText = document.getElementById('custom_terms_input').value.trim();
+
                 const emailjs_config = {
                     emailjs_public: document.getElementById('cfg_emailjs_public').value.trim(),
                     emailjs_service: document.getElementById('cfg_emailjs_service').value.trim(),
@@ -2133,7 +2295,9 @@
                     business_email: businessEmail,
                     banking_info: bankInfo,
                     emailjs_config: emailjs_config,
-                    business_logo: localLogo
+                    business_logo: localLogo,
+                    custom_terms: currentCustomTermsText, // Tenant-isolated terms
+                    terms_presets: termsPresetsList
                 };
 
                 await supabaseClient.from('profiles').update(updatedProfile, activeProfile.id);
@@ -2150,6 +2314,7 @@
                 activeProfile.email_address = businessEmail;
                 activeProfile.banking_info = bankInfo;
                 activeProfile.business_logo = localLogo;
+                activeProfile.custom_terms = currentCustomTermsText;
 
                 const bankParts = bankInfo.split('|');
                 activeProfile.bank_name = bankParts[0] || '';
@@ -2171,6 +2336,7 @@
                 document.getElementById('pdf_bank_name').innerText = activeProfile.trading_as;
                 document.getElementById('pdf_bank_acc').innerText = activeProfile.bank_name;
                 document.getElementById('pdf_branch').innerText = activeProfile.branch_code;
+                document.getElementById('pdf_ref').innerText = activeProfile.reference;
 
                 if (activeProfile.emailjs_public) {
                     emailjs.init({ publicKey: activeProfile.emailjs_public });
@@ -2303,7 +2469,7 @@
                     img.classList.add('hidden');
                 }
                 if (placeholder) placeholder.classList.remove('hidden');
-                if (removeBtn) removeBtn.classList.add('hidden');
+                if (removeBtn) removeBtn.add('hidden');
 
                 if (settingsImg) {
                     settingsImg.src = '';
@@ -3065,13 +3231,22 @@
             currentDocType = type;
             const btnInvoice = document.getElementById('btn-type-invoice');
             const btnQuote = document.getElementById('btn-type-quote');
+            const btnStatement = document.getElementById('btn-type-statement');
+
+            // Reset CSS classes across buttons
+            const inactiveClass = "bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 rounded-lg font-bold text-xs transition border border-slate-200";
+            const activeClass = "bg-[#1A365D] text-white py-2 rounded-lg font-bold text-xs shadow-md";
+
+            btnInvoice.className = inactiveClass;
+            btnQuote.className = inactiveClass;
+            if (btnStatement) btnStatement.className = inactiveClass;
 
             if (type === 'Invoice') {
-                btnInvoice.className = "bg-[#1A365D] text-white py-2 rounded-lg font-bold text-sm shadow-md";
-                btnQuote.className = "bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 rounded-lg font-bold text-sm transition border border-slate-200";
-            } else {
-                btnInvoice.className = "bg-slate-100 text-slate-700 hover:bg-slate-200 py-2 rounded-lg font-bold text-sm transition border border-slate-200";
-                btnQuote.className = "bg-[#1A365D] text-white py-2 rounded-lg font-bold text-sm shadow-md";
+                btnInvoice.className = activeClass;
+            } else if (type === 'Quote') {
+                btnQuote.className = activeClass;
+            } else if (type === 'Statement') {
+                if (btnStatement) btnStatement.className = activeClass;
             }
             updatePreview();
         }
@@ -3134,7 +3309,7 @@
                     detailsText = "Retail Product";
                     rateString = `R ${formatZAR(rateVal)}`;
                 } else if (category === 'room') {
-                    qtyVal = parseInt(act.num_adults) || 1;
+                    qtyVal = parseInt(act.num_adults) || 1; // Nights
                     const guests = parseInt(act.guests) || 1;
                     const rateType = act.rate_type || 'room';
                     rateVal = parseFloat(act.adult_rate) || 0;
@@ -3206,6 +3381,121 @@
                     termsListContainer.innerHTML = lines.map(line => `<li>${line}</li>`).join('');
                 }
             }
+        }
+
+        // Auto Save custom terms helper
+        async function autoSaveCustomTerms(val) {
+            if (!activeProfile) return;
+            activeProfile.custom_terms = val;
+            try {
+                await supabaseClient.from('profiles').update({ custom_terms: val }, activeProfile.id);
+            } catch (err) {
+                console.warn("Custom terms cloud sync skipped", err);
+            }
+        }
+
+        // Toggle presets library display drawer 
+        function togglePresetManager() {
+            const drawer = document.getElementById('presets-manager-drawer');
+            drawer.classList.toggle('hidden');
+            isPresetManagerOpen = !drawer.classList.contains('hidden');
+            if (isPresetManagerOpen) {
+                renderTermsPresetsChips();
+            }
+        }
+
+        // Save active text value inside custom terms area as a preset chip
+        async function saveCurrentTermsAsPreset() {
+            const presetName = document.getElementById('preset_name_input').value.trim();
+            const customTermsText = document.getElementById('custom_terms_input').value.trim();
+
+            if (!presetName) {
+                showToast("Please give your terms preset a name (e.g. Guided Tours Policy).");
+                return;
+            }
+            if (!customTermsText) {
+                showToast("Please add terms inside the custom text box first.");
+                return;
+            }
+
+            // Verify duplicates
+            const existingIdx = termsPresetsList.findIndex(p => p.name.toLowerCase() === presetName.toLowerCase());
+            if (existingIdx !== -1) {
+                termsPresetsList[existingIdx].terms = customTermsText;
+            } else {
+                termsPresetsList.push({
+                    name: presetName,
+                    terms: customTermsText
+                });
+            }
+
+            try {
+                await supabaseClient.from('profiles').update({
+                    terms_presets: termsPresetsList
+                }, activeProfile.id);
+
+                activeProfile.terms_presets = termsPresetsList;
+                document.getElementById('preset_name_input').value = "";
+                renderTermsPresetsChips();
+                showToast(`Preset "${presetName}" saved to cloud library.`);
+            } catch (err) {
+                showToast("Save Preset error: " + err.message);
+            }
+        }
+
+        // Load Preset contents inside customized text area
+        function loadPresetIntoWorkspace(presetIndex) {
+            const preset = termsPresetsList[presetIndex];
+            if (!preset) return;
+
+            document.getElementById('terms_type').value = 'custom';
+            document.getElementById('custom_terms_input').value = preset.terms;
+            document.getElementById('custom_terms_input').classList.remove('hidden');
+            
+            autoSaveCustomTerms(preset.terms);
+            updatePreview();
+            showToast(`Applied preset: "${preset.name}"`);
+        }
+
+        // Permanently erase preset chip
+        async function deleteTermsPreset(presetIndex, event) {
+            event.stopPropagation();
+            const preset = termsPresetsList[presetIndex];
+            if (!preset) return;
+
+            termsPresetsList.splice(presetIndex, 1);
+
+            try {
+                await supabaseClient.from('profiles').update({
+                    terms_presets: termsPresetsList
+                }, activeProfile.id);
+
+                activeProfile.terms_presets = termsPresetsList;
+                renderTermsPresetsChips();
+                showToast("Preset removed from library.");
+            } catch (err) {
+                showToast("Delete Preset error: " + err.message);
+            }
+        }
+
+        // Render preset selector buttons
+        function renderTermsPresetsChips() {
+            const container = document.getElementById('presets-quick-selector');
+            if (termsPresetsList.length === 0) {
+                container.innerHTML = `<span class="text-[10px] text-slate-400 italic">No saved presets yet. Type a title and save current terms.</span>`;
+                return;
+            }
+
+            container.innerHTML = termsPresetsList.map((preset, idx) => `
+                <div onclick="loadPresetIntoWorkspace(${idx})" class="group cursor-pointer bg-white hover:bg-sky-50 text-[#1A365D] border border-slate-200 hover:border-sky-200 pl-2.5 pr-1 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 transition">
+                    <span>${preset.name}</span>
+                    <button onclick="deleteTermsPreset(${idx}, event)" class="p-0.5 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete Preset">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
         }
     </script>
 </body>
