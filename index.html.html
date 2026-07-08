@@ -138,12 +138,12 @@
         </header>
 
         <main class="flex-1 flex flex-col justify-center items-center text-center px-6 relative z-10 max-w-4xl mx-auto py-12">
-            <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-extrabold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-6">Commercial v3.1.1 Enterprise Suite</span>
+            <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-extrabold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-6">Commercial v3.1.2 Enterprise Suite</span>
             <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight text-white">
                 One Invoice Engine.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-sky-500">Every Business Category.</span>
             </h1>
             <p class="text-sm md:text-base text-slate-400 max-w-2xl mt-6 leading-relaxed">
-                Streamline guest bookings, product retail sales, and guest house stays from one unified South African dashboard. Automatically generate high-fidelity vector PDF invoices under 5KB and send them directly to clients in the cloud.
+                Streamline guest bookings, product retail sales, and guest house stays from one unified South African dashboard. Automatically generate high-fidelity vector PDF invoices and send them directly to clients in the cloud.
             </p>
 
             <div class="flex flex-wrap justify-center gap-4 mt-8">
@@ -171,7 +171,7 @@
                                 <span class="text-2xl font-black">R99</span>
                                 <span class="text-xs text-slate-400">/ month</span>
                             </div>
-                            <p class="text-[10px] text-sky-400 font-semibold mt-1">Billed as R1 188 annually</p>
+                            <p class="text-[10px] text-sky-400 font-semibold mt-1">Billed as R1 188 annually • Includes 200 free cloud emails/mo</p>
                         </div>
                         <button onclick="openAuthModal('signup')" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2.5 rounded-lg mt-6 transition shadow-md">
                             Get Annual Access
@@ -187,7 +187,7 @@
                                 <span class="text-2xl font-black">R150</span>
                                 <span class="text-xs text-slate-400">/ month</span>
                             </div>
-                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Cancel or resume at any time</p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Cancel or resume at any time • Includes 200 free cloud emails/mo</p>
                         </div>
                         <button onclick="openAuthModal('signup')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-2.5 rounded-lg mt-6 transition border border-slate-700">
                             Start Monthly License
@@ -259,7 +259,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="font-extrabold text-lg tracking-wide uppercase" id="nav-brand-title">ACTIVITYHUB (PTY) LTD</h1>
-                        <span class="bg-sky-500/20 text-sky-200 font-bold text-[8px] px-2 py-0.5 rounded border border-sky-500/30">Enterprise v3.1.1</span>
+                        <span class="bg-sky-500/20 text-sky-200 font-bold text-[8px] px-2 py-0.5 rounded border border-sky-500/30">Enterprise v3.1.2</span>
                     </div>
                     <p id="nav-brand-sub" class="text-xs text-sky-200 font-medium">Management Dashboard & Multi-Category Invoice Engine</p>
                 </div>
@@ -875,7 +875,7 @@
                         Clear Logs History
                     </button>
                     <button onclick="dispatchManualTest()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-xs">
-                        <i data-lucide="send" class="w-3 h-3"></i> Test Configuration
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i> Test Configuration
                     </button>
                 </div>
             </div>
@@ -908,6 +908,11 @@
 
         let activeGeneratorEnquiryId = null;
         let activeGeneratorActivities = [];
+
+        // Helper to retrieve user isolated local key for cached assets
+        function getUserLogoKey() {
+            return activeUser ? `activityhub_logo_${activeUser.id}` : 'activityhub_logo';
+        }
 
         // Dynamic Field Adapters for CRM Intake
         function adjustIntakeFormFields() {
@@ -1081,7 +1086,6 @@
             }
         }
 
-        // Standard Supabase Direct Rest API caller
         async function makeSupabaseRequest(path, method, body = null, token = null, returnRaw = false) {
             const headers = {
                 'apikey': supabaseClient.key,
@@ -1145,7 +1149,13 @@
                         business_phone: "Andre Strydom",
                         business_email: emailString,
                         banking_info: "FNB Cheque Account 62780459288|250655",
-                        custom_terms: ""
+                        custom_terms: "",
+                        emailjs_config: {
+                            emailjs_public: "",
+                            emailjs_service: "",
+                            emailjs_template: "",
+                            emailjs_invoice_template: ""
+                        }
                     };
                     const insertRes = await supabaseClient.from('profiles').insert(newProfile);
                     activeProfile = insertRes && insertRes.length > 0 ? insertRes[0] : newProfile;
@@ -1198,9 +1208,15 @@
                 document.getElementById('cfg_emailjs_invoice_template').value = activeProfile.emailjs_invoice_template;
 
                 // Sync background logo settings preview
-                if (activeProfile.business_logo) {
-                    localStorage.setItem('activityhub_logo', activeProfile.business_logo);
-                    applyLogo(activeProfile.business_logo);
+                const logoKey = getUserLogoKey();
+                const cachedLogo = localStorage.getItem(logoKey) || activeProfile.business_logo;
+                if (cachedLogo) {
+                    localStorage.setItem(logoKey, cachedLogo);
+                    applyLogo(cachedLogo);
+                }
+
+                if (activeProfile.emailjs_public) {
+                    emailjs.init({ publicKey: activeProfile.emailjs_public });
                 }
 
                 // Fetch lead database
@@ -1305,11 +1321,9 @@
                 if (res.error) {
                     showToast(res.error_description || "Registration Failed.");
                 } else {
-                    // Registration success
                     banner.innerText = "Account Created Successfully! If email verification is enabled in your Supabase backend, please click the activation link in your inbox. Otherwise, click below to Sign In instantly!";
                     banner.classList.remove('hidden');
                     
-                    // Toggle to sign in automatically
                     activeAuthMode = 'signin';
                     document.getElementById('auth-title').innerText = "Sign In";
                     document.getElementById('auth-registration-inputs').classList.add('hidden');
@@ -1364,7 +1378,6 @@
             return dates.sort().reverse()[0];
         }
 
-        // Auto Cancellation handler
         function executePassedDateCancellations() {
             const todayStr = new Date().toISOString().split('T')[0];
             let autoCancelCount = 0;
@@ -1407,14 +1420,12 @@
             }
         }
 
-        // Unified Follow-up dispatch (Cloud first with system local fallback)
         function triggerFollowupDispatch() {
             const pubKey = activeProfile.emailjs_public;
             const serviceId = activeProfile.emailjs_service;
             const templateId = activeProfile.emailjs_template;
 
             if (pubKey && serviceId && templateId) {
-                // Background cloud dispatch
                 dispatchWeeklyEmailJS();
             } else {
                 showToast("Configure EmailJS in settings to send this automatically. Launching system email app fallback...");
@@ -1424,7 +1435,6 @@
             }
         }
 
-        // Fallback Mailto
         function dispatchWeeklyMailto() {
             const dueEnquiries = getDueWeeklyFollowupsList();
             if (dueEnquiries.length === 0) return;
@@ -1447,7 +1457,6 @@
             window.location.href = mailtoUrl;
         }
 
-        // Cloud EmailJS
         function dispatchWeeklyEmailJS() {
             const dueEnquiries = getDueWeeklyFollowupsList();
             if (dueEnquiries.length === 0) return;
@@ -1499,7 +1508,6 @@
                 const found = list.some(x => x.id === item.id);
                 if (found) {
                     item.last_followup_reminder = now;
-                    // Update database
                     supabaseClient.from('enquiries').update({ last_followup_reminder: now }, item.id);
                 }
                 return item;
@@ -1727,7 +1735,6 @@
                 </div>`;
         }
 
-        // Updated Email sender to dynamically replace visual summaries with rendered premium HTML invoice
         async function triggerInvoicePdfEmail() {
             const btn = document.getElementById('email-invoice-pdf-btn');
             const clientEmail = document.getElementById('p_client_email').value.trim();
@@ -1739,7 +1746,7 @@
 
             const pubKey = activeProfile.emailjs_public;
             const serviceId = activeProfile.emailjs_service;
-            let templateId = localStorage.getItem('activityhub_emailjs_invoice_template') || activeProfile.emailjs_template;
+            let templateId = activeProfile.emailjs_invoice_template || activeProfile.emailjs_template;
 
             if (!pubKey || !serviceId || !templateId) {
                 showToast("Email API parameter missing. Please open Suite Settings to complete setup.");
@@ -1899,7 +1906,7 @@
                     qtyVal = adl + kid;
                     rateVal = parseFloat(act.adult_rate) || 0;
                     rowTotal = (adl * rateVal) + (kid * (parseFloat(act.child_rate) || 0));
-                    detailsText = `Adl: ${adl}@R${act.adult_rate} | Kid: ${kid}@R${act.child_rate}`;
+                    detailsText = `Dt: ${act.date || ''} @ ${act.time || ''} | Adl: ${adl}@R${act.adult_rate} | Kid: ${kid}@R${act.child_rate}`;
                 } else if (category === 'product') {
                     qtyVal = parseInt(act.num_adults) || 0;
                     rateVal = parseFloat(act.adult_rate) || 0;
@@ -2085,7 +2092,7 @@
                 emailjs.send(serviceId, templateId, {
                     to_email: activeProfile.email_address || "info@activityhub.co.za",
                     client_name: "Admin System Test",
-                    pdf_attachment: "data:application/pdf;base64,JVBERi0xLjQKJ..."
+                    client_summary: "<h3>Connection Test Successful</h3><p>Your cloud credentials are verified!</p>"
                 }, { publicKey: pubKey })
                 .then(() => {
                     showToast("Test Email successfully sent.");
@@ -2102,18 +2109,12 @@
 
         async function saveEmailSettings() {
             try {
-                const updatedProfile = {
-                    trading_as: document.getElementById('cfg_trading_as').value.trim(),
-                    business_reg: document.getElementById('cfg_reg_no').value.trim(),
-                    contact_person: document.getElementById('cfg_contact').value.trim(),
-                    business_email: document.getElementById('cfg_email').value.trim(),
-                    banking_info: document.getElementById('cfg_bank_acc').value.trim() + "|" + document.getElementById('cfg_branch').value.trim(),
-                    emailjs_public: document.getElementById('cfg_emailjs_public').value.trim(),
-                    emailjs_service: document.getElementById('cfg_emailjs_service').value.trim(),
-                    emailjs_template: document.getElementById('cfg_emailjs_template').value.trim(),
-                    logo_url: localStorage.getItem('activityhub_logo') || "" // Saves logo directly to Supabase cloud profile
-                };
-
+                const tradingAs = document.getElementById('cfg_trading_as').value.trim();
+                const businessReg = document.getElementById('cfg_reg_no').value.trim();
+                const contactPerson = document.getElementById('cfg_contact').value.trim();
+                const businessEmail = document.getElementById('cfg_email').value.trim();
+                const bankInfo = document.getElementById('cfg_bank_acc').value.trim() + "|" + document.getElementById('cfg_branch').value.trim();
+                
                 const emailjs_config = {
                     emailjs_public: document.getElementById('cfg_emailjs_public').value.trim(),
                     emailjs_service: document.getElementById('cfg_emailjs_service').value.trim(),
@@ -2121,21 +2122,36 @@
                     emailjs_invoice_template: document.getElementById('cfg_emailjs_invoice_template').value.trim()
                 };
 
-                updatedProfile.emailjs_config = emailjs_config;
+                const logoKey = getUserLogoKey();
+                const localLogo = localStorage.getItem(logoKey) || "";
+
+                const updatedProfile = {
+                    trading_as: tradingAs,
+                    business_name: tradingAs + " (PTY) LTD",
+                    business_reg: businessReg,
+                    business_phone: contactPerson,
+                    business_email: businessEmail,
+                    banking_info: bankInfo,
+                    emailjs_config: emailjs_config,
+                    business_logo: localLogo
+                };
 
                 await supabaseClient.from('profiles').update(updatedProfile, activeProfile.id);
                 
                 // Map local variables back to memory object safely
-                activeProfile.trading_as = updatedProfile.trading_as;
-                activeProfile.business_reg = updatedProfile.business_reg;
-                activeProfile.reg_no = updatedProfile.business_reg;
-                activeProfile.business_phone = updatedProfile.business_phone;
-                activeProfile.contact_person = updatedProfile.business_phone;
-                activeProfile.business_email = updatedProfile.business_email;
-                activeProfile.email_address = updatedProfile.business_email;
-                activeProfile.banking_info = updatedProfile.banking_info;
+                activeProfile.trading_as = tradingAs;
+                activeProfile.business_name = updatedProfile.business_name;
+                activeProfile.company_name = updatedProfile.business_name;
+                activeProfile.business_reg = businessReg;
+                activeProfile.reg_no = businessReg;
+                activeProfile.business_phone = contactPerson;
+                activeProfile.contact_person = contactPerson;
+                activeProfile.business_email = businessEmail;
+                activeProfile.email_address = businessEmail;
+                activeProfile.banking_info = bankInfo;
+                activeProfile.business_logo = localLogo;
 
-                const bankParts = updatedProfile.banking_info.split('|');
+                const bankParts = bankInfo.split('|');
                 activeProfile.bank_name = bankParts[0] || '';
                 activeProfile.branch_code = bankParts[1] || '';
 
@@ -2144,13 +2160,10 @@
                 activeProfile.emailjs_service = emailjs_config.emailjs_service;
                 activeProfile.emailjs_template = emailjs_config.emailjs_template;
                 activeProfile.emailjs_invoice_template = emailjs_config.emailjs_invoice_template;
-                
-                // Save custom invoice template to local storage to bypass SQL modifications
-                localStorage.setItem('activityhub_emailjs_invoice_template', document.getElementById('cfg_emailjs_invoice_template').value.trim());
 
-                // Re-hydrate
-                document.getElementById('nav-brand-title').innerText = activeProfile.company_name || activeProfile.trading_as;
-                document.getElementById('pdf_comp_name').innerText = activeProfile.company_name || activeProfile.trading_as;
+                // Re-hydrate UI Elements
+                document.getElementById('nav-brand-title').innerText = activeProfile.company_name;
+                document.getElementById('pdf_comp_name').innerText = activeProfile.company_name;
                 document.getElementById('pdf_trading_as').innerText = activeProfile.trading_as;
                 document.getElementById('pdf_reg_no').innerText = activeProfile.reg_no;
                 document.getElementById('pdf_contact').innerText = activeProfile.contact_person;
@@ -2165,7 +2178,7 @@
 
                 closeEmailSettings();
                 updatePreview();
-                showToast("Branding & API credentials updated successfully.");
+                showToast("Suite branding and cloud database configs saved successfully.");
 
             } catch (err) {
                 showToast("Failed to save cloud profile: " + err.message);
@@ -2183,7 +2196,6 @@
             document.getElementById('cfg_emailjs_service').value = '';
             document.getElementById('cfg_emailjs_template').value = '';
             document.getElementById('cfg_emailjs_invoice_template').value = '';
-            localStorage.removeItem('activityhub_emailjs_invoice_template');
         }
 
         function openEmailSettings() {
@@ -2220,7 +2232,8 @@
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     const base64Img = e.target.result;
-                    localStorage.setItem('activityhub_logo', base64Img);
+                    const logoKey = getUserLogoKey();
+                    localStorage.setItem(logoKey, base64Img);
                     applyLogo(base64Img);
                     
                     try {
@@ -2239,7 +2252,8 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Img = e.target.result;
-                    localStorage.setItem('activityhub_logo', base64Img);
+                    const logoKey = getUserLogoKey();
+                    localStorage.setItem(logoKey, base64Img);
                     applyLogo(base64Img);
                     showToast("New logo uploaded. Click 'Save Configured Rules' to sync with Cloud!");
                 }
@@ -2248,12 +2262,14 @@
         }
 
         function removeLogo() {
-            localStorage.removeItem('activityhub_logo');
+            const logoKey = getUserLogoKey();
+            localStorage.removeItem(logoKey);
             applyLogo(null);
         }
 
         function removeLogoSettings() {
-            localStorage.removeItem('activityhub_logo');
+            const logoKey = getUserLogoKey();
+            localStorage.removeItem(logoKey);
             applyLogo(null);
             showToast("Logo removed locally. Click 'Save Configured Rules' to sync with Cloud!");
         }
@@ -2287,14 +2303,14 @@
                     img.classList.add('hidden');
                 }
                 if (placeholder) placeholder.classList.remove('hidden');
-                if (removeBtn) removeBtn.add('hidden');
+                if (removeBtn) removeBtn.classList.add('hidden');
 
                 if (settingsImg) {
                     settingsImg.src = '';
                     settingsImg.classList.add('hidden');
                 }
                 if (settingsPlaceholder) settingsPlaceholder.classList.remove('hidden');
-                if (settingsRemoveBtn) settingsRemoveBtn.add('hidden');
+                if (settingsRemoveBtn) settingsRemoveBtn.classList.add('hidden');
             }
         }
 
@@ -2355,7 +2371,7 @@
                 activityData = {
                     category: 'product',
                     name: document.getElementById('activity_name').value,
-                    num_adults: parseInt(document.getElementById('intake_product_qty').value) || 0, // qty inside num_adults for pipeline logic
+                    num_adults: parseInt(document.getElementById('intake_product_qty').value) || 0,
                     adult_rate: parseFloat(document.getElementById('intake_product_price').value) || 0,
                     num_kids: 0,
                     child_rate: 0
@@ -2373,7 +2389,7 @@
                     name: document.getElementById('activity_name').value,
                     room_in: chkIn,
                     room_out: chkOut,
-                    num_adults: nights, // nights mapped to num_adults
+                    num_adults: nights,
                     adult_rate: parseFloat(document.getElementById('intake_room_rate').value) || 0,
                     num_kids: 0,
                     child_rate: 0,
@@ -2407,7 +2423,6 @@
             renderEnquiries();
             checkWeeklyFollowupsDue();
             
-            // Reset
             document.getElementById('enquiry-form').reset();
             document.getElementById('intake_item_category').value = 'activity';
             adjustIntakeFormFields();
@@ -2754,7 +2769,6 @@
             updatePreview();
         }
 
-        // Exporter Generator Sidebar Forms
         function clearGenerator() {
             activeGeneratorEnquiryId = null;
             activeGeneratorActivities = [];
@@ -2965,7 +2979,6 @@
                 activeGeneratorActivities[idx][field] = parseFloat(value) || 0;
             } else if (field === 'room_in' || field === 'room_out') {
                 activeGeneratorActivities[idx][field] = value;
-                // Recompute nights
                 const rIn = activeGeneratorActivities[idx].room_in;
                 const rOut = activeGeneratorActivities[idx].room_out;
                 if (rIn && rOut) {
@@ -3107,7 +3120,6 @@
                     const childRate = parseFloat(act.child_rate) || 0;
                     qtyVal = adults + kids;
                     rowTotal = (adults * adultRate) + (kids * childRate);
-                    // Calculates weighted average rate dynamically
                     rateVal = qtyVal > 0 ? (rowTotal / qtyVal) : adultRate;
                     detailsText = `Date: ${act.date || ''} @ ${act.time || ''}<br>Adl: ${adults}@R${formatZAR(adultRate)} <br> Kid: ${kids}@R${formatZAR(childRate)}`;
                     
@@ -3122,7 +3134,7 @@
                     detailsText = "Retail Product";
                     rateString = `R ${formatZAR(rateVal)}`;
                 } else if (category === 'room') {
-                    qtyVal = parseInt(act.num_adults) || 1; // Nights
+                    qtyVal = parseInt(act.num_adults) || 1;
                     const guests = parseInt(act.guests) || 1;
                     const rateType = act.rate_type || 'room';
                     rateVal = parseFloat(act.adult_rate) || 0;
