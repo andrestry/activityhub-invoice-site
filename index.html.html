@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ActivityHub - Commercial Enterprise Suite</title>
     <!-- Tailwind CSS for modern responsive interfaces -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -147,7 +147,7 @@
             </p>
 
             <div class="flex flex-wrap justify-center gap-4 mt-8">
-                <button onclick="openAuthModal('signup')" class="bg-sky-50 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-xl text-sm transition shadow-lg shadow-sky-500/20">
+                <button onclick="openAuthModal('signup')" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-xl text-sm transition shadow-lg shadow-sky-500/20">
                     Get Started Free
                 </button>
                 <a href="#pricing-block" class="bg-slate-800/60 hover:bg-slate-700 text-slate-300 py-3 px-8 rounded-xl text-sm font-semibold border border-slate-700/50 transition">
@@ -332,10 +332,10 @@
                             </div>
 
                             <div class="bg-slate-50/50 p-3 rounded-lg border border-slate-200/60">
-                                <button type="button" onclick="toggleIntakeCorporate()" class="text-xs font-bold text-sky-700 flex items-center gap-1 hover:text-sky-900 focus:outline-none">
+                                <button type="button" onclick="toggleIntakeCorporate()" class="text-xs font-bold text-sky-700 flex items-center gap-1 hover:text-sky-900 focus:outline-none font-sans">
                                     <i data-lucide="building" class="w-3.5 h-3.5"></i> Add Corporate Details (Optional)
                                 </button>
-                                <div id="intake-corporate-fields" class="hidden mt-3 space-y-3">
+                                <div id="intake-corporate-fields" class="hidden mt-3 space-y-3 font-sans">
                                     <div>
                                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Company Name</label>
                                         <input type="text" id="company_name" placeholder="e.g. Acme Tours Pty" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs">
@@ -382,21 +382,21 @@
                                     </div>
                                     <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-150">
                                         <div>
-                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1"># Adults</label>
+                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-650 mb-1"># Adults</label>
                                             <input type="number" id="num_adults" value="0" min="0" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Adult Rate (R)</label>
+                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-650 mb-1">Adult Rate (R)</label>
                                             <input type="number" id="adult_rate" value="0.00" step="0.01" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-150">
                                         <div>
-                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1"># Kids</label>
+                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-650 mb-1"># Kids</label>
                                             <input type="number" id="num_kids" value="0" min="0" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Kid Rate (R)</label>
+                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-650 mb-1">Kid Rate (R)</label>
                                             <input type="number" id="child_rate" value="0.00" step="0.01" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                     </div>
@@ -406,11 +406,11 @@
                                 <div id="intake-block-product" class="space-y-3 hidden">
                                     <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-150">
                                         <div>
-                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Quantity</label>
+                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-650 mb-1">Quantity</label>
                                             <input type="number" id="intake_product_qty" value="1" min="1" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Unit Price (R)</label>
+                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-650 mb-1">Unit Price (R)</label>
                                             <input type="number" id="intake_product_price" value="0.00" step="0.01" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                     </div>
@@ -435,11 +435,11 @@
                                         </div>
                                         <div class="grid grid-cols-2 gap-3">
                                             <div>
-                                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Guests / People</label>
+                                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-655 mb-1">Guests / People</label>
                                                 <input type="number" id="intake_room_guests" value="1" min="1" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                             </div>
                                             <div>
-                                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Pricing Mode</label>
+                                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-655 mb-1">Pricing Mode</label>
                                                 <select id="intake_room_rate_type" onchange="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm bg-white font-semibold">
                                                     <option value="room">Total Room Rate</option>
                                                     <option value="person">Per Person Rate</option>
@@ -447,7 +447,7 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nightly Cost (R)</label>
+                                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-655 mb-1">Nightly Cost (R)</label>
                                             <input type="number" id="intake_room_rate" value="0.00" step="0.01" oninput="recalcIntakeTotal()" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
                                         </div>
                                     </div>
@@ -522,7 +522,7 @@
                             <i data-lucide="sliders-horizontal" class="text-sky-600"></i>
                             <h2 class="font-bold text-slate-900" id="generator-header-title">Configure Document</h2>
                         </div>
-                        <button onclick="clearGenerator()" class="text-xs font-bold text-[#1A365D] hover:underline flex items-center gap-1">
+                        <button onclick="clearGenerator()" class="text-xs font-bold text-[#1A365D] hover:underline flex items-center gap-1 font-sans">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Clear Panel
                         </button>
                     </div>
@@ -623,7 +623,7 @@
 
                         <!-- Terms Selector & PRESETS MANAGER (Tenant-Isolated, Syncs to Supabase) -->
                         <div class="border-t border-slate-100 pt-3 space-y-3">
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between font-sans">
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">Terms & Conditions Type</label>
                                 <button onclick="togglePresetManager()" class="text-xs font-bold text-sky-700 flex items-center gap-1 hover:text-sky-900">
                                     <i data-lucide="folder-heart" class="w-3.5 h-3.5"></i> Presets Library
@@ -667,10 +667,10 @@
                     <div class="w-full flex justify-between items-center mb-4 print:hidden print-btn-container gap-2">
                         <span class="text-xs font-extrabold text-slate-500 uppercase tracking-widest hidden sm:inline">Active Document Layout</span>
                         <div class="flex gap-2 w-full sm:w-auto">
-                            <button onclick="printDocument()" class="flex-1 sm:flex-none bg-[#1A365D] hover:bg-sky-950 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition text-xs shadow-md">
+                            <button onclick="printDocument()" class="flex-1 sm:flex-none bg-[#1A365D] hover:bg-sky-950 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition text-xs shadow-md font-sans">
                                 <i data-lucide="printer" class="w-4 h-4"></i> Print
                             </button>
-                            <button id="email-invoice-pdf-btn" onclick="triggerInvoicePdfEmail()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition text-xs shadow-md">
+                            <button id="email-invoice-pdf-btn" onclick="triggerInvoicePdfEmail()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition text-xs shadow-md font-sans">
                                 <i data-lucide="send" class="w-4 h-4"></i> Email PDF to Client
                             </button>
                         </div>
@@ -707,7 +707,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="pr-3 py-0.5"></td>
-                                                <td class="text-slate-900 py-0.5" id="pdf_email_info">info@activityhub.co.za</td>
+                                                <td class="text-slate-900 py-0.5" id="pdf_email_info font-sans">info@activityhub.co.za</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -715,7 +715,7 @@
                                 
                                 <div class="text-right">
                                     <div class="bg-slate-100 text-slate-800 px-3 py-1 font-bold rounded uppercase text-xs tracking-wider border border-slate-200 inline-block mb-3" id="doc-type-badge">Invoice</div>
-                                    <table class="text-[10px] ml-auto border-collapse">
+                                    <table class="text-[10px] ml-auto border-collapse font-sans">
                                         <tr>
                                             <td class="pr-3 text-slate-500 font-semibold py-0.5">Date</td>
                                             <td class="font-bold text-slate-900 text-right py-0.5" id="p_out_date">02-Jul-26</td>
@@ -814,7 +814,7 @@
                 <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide">Brand & Business Details</h4>
                 
                 <!-- Cloud Logo Uploader -->
-                <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between gap-3">
+                <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between gap-3 font-sans">
                     <div class="flex items-center gap-3">
                         <div id="settings-logo-preview-container" class="w-12 h-12 bg-slate-50 border border-slate-200 rounded overflow-hidden flex items-center justify-center">
                             <img id="settings_logo_preview" class="w-full h-full object-contain hidden" alt="Logo">
@@ -822,7 +822,7 @@
                         </div>
                         <div>
                             <span class="text-xs font-bold text-slate-700 block">Company Logo</span>
-                            <span class="text-[10px] text-slate-500">Binds to your cloud profile</span>
+                            <span class="text-[10px] text-slate-500 font-sans">Binds to your cloud profile</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
@@ -856,12 +856,12 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Bank & Account</label>
-                        <input type="text" id="cfg_bank_acc" class="w-full bg-white border border-slate-200 rounded p-1.5 text-xs font-semibold">
+                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5 font-sans">Bank & Account</label>
+                        <input type="text" id="cfg_bank_acc" class="w-full bg-white border border-slate-200 rounded p-1.5 text-xs font-semibold font-sans">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Branch Code</label>
-                        <input type="text" id="cfg_branch" class="w-full bg-white border border-slate-200 rounded p-1.5 text-xs">
+                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5 font-sans">Branch Code</label>
+                        <input type="text" id="cfg_branch" class="w-full bg-white border border-slate-200 rounded p-1.5 text-xs font-sans">
                     </div>
                 </div>
             </div>
@@ -884,7 +884,7 @@
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-1">EmailJS Template ID (Invoices - Optional)</label>
-                    <input type="text" id="cfg_emailjs_invoice_template" placeholder="e.g. template_invoice" class="w-full border border-slate-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-sky-500">
+                    <input type="text" id="cfg_emailjs_invoice_template" placeholder="e.g. template_invoice" class="w-full border border-slate-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-sky-500 font-sans">
                 </div>
             </div>
 
@@ -895,7 +895,7 @@
                     <!-- Dynamic logs -->
                 </div>
                 <div class="flex justify-between items-center mt-2 pt-1 border-t border-slate-800">
-                    <button onclick="clearEmailLogs()" class="text-[9px] text-rose-500 hover:text-rose-700 font-bold focus:outline-none">
+                    <button onclick="clearEmailLogs()" class="text-[9px] text-rose-500 hover:text-rose-700 font-bold focus:outline-none font-sans">
                         Clear Logs History
                     </button>
                     <button onclick="dispatchManualTest()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-xs">
@@ -905,10 +905,10 @@
             </div>
 
             <div class="grid grid-cols-2 gap-2 pt-2">
-                <button onclick="clearEmailSettings()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition">
+                <button onclick="clearEmailSettings()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition font-sans">
                     Reset Settings
                 </button>
-                <button onclick="saveEmailSettings()" class="bg-[#1A365D] hover:bg-sky-950 text-white font-bold py-2 rounded-lg text-xs transition shadow-sm">
+                <button onclick="saveEmailSettings()" class="bg-[#1A365D] hover:bg-sky-950 text-white font-bold py-2 rounded-lg text-xs transition shadow-sm font-sans">
                     Save Configured Rules
                 </button>
             </div>
@@ -2155,119 +2155,6 @@
             }
         }
 
-        // Preset Library Drawer handlers
-        function togglePresetManager() {
-            const drawer = document.getElementById('presets-manager-drawer');
-            drawer.classList.toggle('hidden');
-            isPresetManagerOpen = !drawer.classList.contains('hidden');
-            if (isPresetManagerOpen) {
-                renderTermsPresetsChips();
-            }
-        }
-
-        async function saveCurrentTermsAsPreset() {
-            const presetName = document.getElementById('preset_name_input').value.trim();
-            const customTermsText = document.getElementById('custom_terms_input').value.trim();
-
-            if (!presetName) {
-                showToast("Please give your terms preset a name (e.g. Guided Tours Policy).");
-                return;
-            }
-            if (!customTermsText) {
-                showToast("Please add terms inside the custom text box first.");
-                return;
-            }
-
-            // Check duplicate preset names
-            const existingIdx = termsPresetsList.findIndex(p => p.name.toLowerCase() === presetName.toLowerCase());
-            if (existingIdx !== -1) {
-                termsPresetsList[existingIdx].terms = customTermsText;
-            } else {
-                termsPresetsList.push({
-                    name: presetName,
-                    terms: customTermsText
-                });
-            }
-
-            // Save presets array directly to Supabase cloud profile JSON property
-            try {
-                await supabaseClient.from('profiles').update({
-                    terms_presets: termsPresetsList
-                }, activeProfile.id);
-
-                activeProfile.terms_presets = termsPresetsList;
-                document.getElementById('preset_name_input').value = "";
-                renderTermsPresetsChips();
-                showToast(`Preset "${presetName}" saved to cloud library.`);
-            } catch (err) {
-                showToast("Save Preset error: " + err.message);
-            }
-        }
-
-        function loadPresetIntoWorkspace(presetIndex) {
-            const preset = termsPresetsList[presetIndex];
-            if (!preset) return;
-
-            document.getElementById('terms_type').value = 'custom';
-            document.getElementById('custom_terms_input').value = preset.terms;
-            document.getElementById('custom_terms_input').classList.remove('hidden');
-            
-            // Instantly auto-save loaded custom terms onto profile to secure isolation
-            autoSaveCustomTerms(preset.terms);
-            updatePreview();
-            showToast(`Applied preset: "${preset.name}"`);
-        }
-
-        async function deleteTermsPreset(presetIndex, event) {
-            event.stopPropagation(); // Prevent loading preset on chip selection
-            const preset = termsPresetsList[presetIndex];
-            if (!preset) return;
-
-            termsPresetsList.splice(presetIndex, 1);
-
-            try {
-                await supabaseClient.from('profiles').update({
-                    terms_presets: termsPresetsList
-                }, activeProfile.id);
-
-                activeProfile.terms_presets = termsPresetsList;
-                renderTermsPresetsChips();
-                showToast("Preset removed from library.");
-            } catch (err) {
-                showToast("Delete Preset error: " + err.message);
-            }
-        }
-
-        function renderTermsPresetsChips() {
-            const container = document.getElementById('presets-quick-selector');
-            if (termsPresetsList.length === 0) {
-                container.innerHTML = `<span class="text-[10px] text-slate-400 italic">No saved presets yet. Type a title and save current terms.</span>`;
-                return;
-            }
-
-            container.innerHTML = termsPresetsList.map((preset, idx) => `
-                <div onclick="loadPresetIntoWorkspace(${idx})" class="group cursor-pointer bg-white hover:bg-sky-50 text-[#1A365D] border border-slate-200 hover:border-sky-200 pl-2.5 pr-1 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 transition">
-                    <span>${preset.name}</span>
-                    <button onclick="deleteTermsPreset(${idx}, event)" class="p-0.5 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete Preset">
-                        <i data-lucide="x" class="w-3 h-3"></i>
-                    </button>
-                </div>
-            `).join('');
-
-            lucide.createIcons();
-        }
-
-        // Auto persist custom terms to active tenant Supabase profile to keep absolute isolation
-        async function autoSaveCustomTerms(val) {
-            if (!activeProfile) return;
-            activeProfile.custom_terms = val;
-            try {
-                await supabaseClient.from('profiles').update({ custom_terms: val }, activeProfile.id);
-            } catch (err) {
-                console.warn("Custom terms cloud sync skipped", err);
-            }
-        }
-
         async function saveEmailSettings() {
             try {
                 const tradingAs = document.getElementById('cfg_trading_as').value.trim();
@@ -2287,6 +2174,9 @@
                 const logoKey = getUserLogoKey();
                 const localLogo = localStorage.getItem(logoKey) || "";
 
+                // FIXED: Structured the updated profile object using exactly standard schema fields.
+                // Replaced non-existent columns (emailjs_public, emailjs_service, logo_url, etc.) with standardized business columns
+                // to prevent PostgreSQL "Column does not exist" 400 Bad Request write crashes.
                 const updatedProfile = {
                     trading_as: tradingAs,
                     business_name: tradingAs + " (PTY) LTD",
@@ -2300,9 +2190,12 @@
                     terms_presets: termsPresetsList
                 };
 
-                await supabaseClient.from('profiles').update(updatedProfile, activeProfile.id);
+                const response = await supabaseClient.from('profiles').update(updatedProfile, activeProfile.id);
+                if (response && response.error) {
+                    throw new Error(response.error_description || "Database update operation rejected by cloud rules.");
+                }
                 
-                // Map local variables back to memory object safely
+                // Map local variables back to active profile memory object safely
                 activeProfile.trading_as = tradingAs;
                 activeProfile.business_name = updatedProfile.business_name;
                 activeProfile.company_name = updatedProfile.business_name;
@@ -2326,7 +2219,7 @@
                 activeProfile.emailjs_template = emailjs_config.emailjs_template;
                 activeProfile.emailjs_invoice_template = emailjs_config.emailjs_invoice_template;
 
-                // Re-hydrate UI Elements
+                // Re-hydrate UI Elements instantly inside layout
                 document.getElementById('nav-brand-title').innerText = activeProfile.company_name;
                 document.getElementById('pdf_comp_name').innerText = activeProfile.company_name;
                 document.getElementById('pdf_trading_as').innerText = activeProfile.trading_as;
@@ -2347,6 +2240,7 @@
                 showToast("Suite branding and cloud database configs saved successfully.");
 
             } catch (err) {
+                console.error("Cloud configuration write crash:", err);
                 showToast("Failed to save cloud profile: " + err.message);
             }
         }
@@ -2757,8 +2651,8 @@
                 const sectionHeader = document.createElement('div');
                 sectionHeader.className = "border-l-4 border-sky-600 pl-3 py-1 mt-6 first:mt-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5";
                 sectionHeader.innerHTML = `
-                    <h3 class="font-black text-xs text-slate-900 tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="calendar" class="w-4 h-4 text-sky-600"></i> ${monthName}
+                    <h3 class="font-black text-xs text-slate-900 tracking-wider flex items-center gap-1.5 font-sans">
+                        <i data-lucide="calendar" class="w-4 h-4 text-sky-600 font-sans"></i> ${monthName}
                     </h3>
                     <div class="flex gap-2 text-[10px] font-bold">
                         <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-100">Booked: R ${formatZAR(bookedValue)}</span>
@@ -2780,12 +2674,12 @@
 
                     const isConfirmState = String(deleteConfirmId) === String(item.id);
                     const trashButtonClass = isConfirmState 
-                        ? "bg-rose-600 text-white font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-rose-700 transition" 
-                        : "text-rose-600 hover:bg-rose-50 p-2 rounded-lg transition";
+                        ? "bg-rose-600 text-white font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-rose-700 transition font-sans" 
+                        : "text-rose-600 hover:bg-rose-50 p-2 rounded-lg transition font-sans";
                     const trashButtonContent = isConfirmState ? "Confirm Delete?" : `<i data-lucide="trash-2" class="w-4 h-4"></i>`;
 
                     const corporateBadge = item.company_name 
-                        ? `<div class="text-[10px] bg-slate-100 text-slate-700 py-1 px-2.5 rounded font-bold border border-slate-200 inline-flex items-center gap-1 mt-1"><i data-lucide="building" class="w-3 h-3"></i> ${item.company_name}</div>`
+                        ? `<div class="text-[10px] bg-slate-100 text-slate-700 py-1 px-2.5 rounded font-bold border border-slate-200 inline-flex items-center gap-1 mt-1 font-sans"><i data-lucide="building" class="w-3 h-3"></i> ${item.company_name}</div>`
                         : '';
 
                     let activitiesListHtml = '';
@@ -2828,7 +2722,7 @@
                     }
 
                     card.innerHTML = `
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 font-sans">
                             <div>
                                 <div class="flex items-center gap-2">
                                     <h3 class="font-extrabold text-slate-900 text-base">${item.client_name}</h3>
@@ -2842,24 +2736,24 @@
                             </div>
                             <div class="text-right">
                                 <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold block">Total Invoice Value</span>
-                                <span class="font-black text-slate-950 text-base">R ${formatZAR(calculatedCost)}</span>
+                                <span class="font-black text-slate-950 text-base font-sans">R ${formatZAR(calculatedCost)}</span>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100/80 space-y-1.5">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Activity Parameters (${item.activities ? item.activities.length : 0})</span>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100/80 space-y-1.5 font-sans">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block font-sans">Activity Parameters (${item.activities ? item.activities.length : 0})</span>
                                 <div class="max-h-[140px] overflow-y-auto pr-1">
                                     ${activitiesListHtml}
                                 </div>
                             </div>
                             <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Internal Progress Notes</span>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1 font-sans">Internal Progress Notes</span>
                                 <textarea onchange="updateFollowupNotes('${item.id}', this.value)" rows="3" class="w-full text-xs p-2 border border-slate-200 rounded-lg focus:ring-1 focus:ring-sky-500 bg-slate-50/50" placeholder="Type logs and auto-saves here...">${item.notes || ''}</textarea>
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 font-sans">
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-semibold text-slate-500">Update Status:</span>
                                 <select onchange="changeEnquiryStatus('${item.id}', this.value)" class="text-xs font-bold border border-slate-200 rounded p-1.5 bg-white text-slate-700">
@@ -3016,7 +2910,7 @@
                                 <input type="text" value="${act.time || ''}" oninput="updateActivityValue(${idx}, 'time', this.value)" placeholder="13h00" class="w-full bg-white border border-slate-200 rounded p-1 text-xs outline-none">
                             </div>
                         </div>
-                        <div class="grid grid-cols-4 gap-1 pt-1">
+                        <div class="grid grid-cols-4 gap-1 pt-1 font-sans">
                             <div>
                                 <label class="block text-[9px] font-bold text-slate-500 mb-0.5"># Adl</label>
                                 <input type="number" min="0" value="${act.num_adults || 0}" oninput="updateActivityValue(${idx}, 'num_adults', this.value)" class="w-full bg-white border border-slate-200 rounded p-1 text-xs text-center outline-none">
@@ -3060,20 +2954,20 @@
                                 <input type="date" value="${act.room_out || ''}" onchange="updateActivityValue(${idx}, 'room_out', this.value)" class="w-full bg-white border border-slate-200 rounded p-1 text-xs outline-none">
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 pt-1">
+                        <div class="grid grid-cols-2 gap-2 pt-1 font-sans">
                             <div>
                                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">Guests / People</label>
                                 <input type="number" min="1" value="${act.guests || 1}" oninput="updateActivityValue(${idx}, 'guests', this.value)" class="w-full bg-white border border-slate-200 rounded p-1 text-xs">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">Pricing Mode</label>
+                                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5 font-sans">Pricing Mode</label>
                                 <select onchange="updateActivityValue(${idx}, 'rate_type', this.value)" class="w-full bg-white border border-slate-200 rounded p-1 text-xs font-semibold focus:outline-none">
                                     <option value="room" ${act.rate_type === 'room' ? 'selected' : ''}>Total Room Rate</option>
                                     <option value="person" ${act.rate_type === 'person' ? 'selected' : ''}>Per Person Rate</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 pt-1">
+                        <div class="grid grid-cols-2 gap-2 pt-1 font-sans">
                             <div class="flex items-center text-[10px] font-bold text-slate-500 pt-3">
                                 <span>Total Nights Stayed: ${act.num_adults || 0}</span>
                             </div>
@@ -3113,17 +3007,17 @@
                 headerTitle.innerText = `Edit: ${originItem ? originItem.client_name : 'Document'}`;
                 
                 actionsBlock.innerHTML = `
-                    <button onclick="syncChangesToCRM()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-md">
+                    <button onclick="syncChangesToCRM()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-md font-sans">
                         <i data-lucide="check-square" class="w-4 h-4"></i> Save Changes to CRM Enquiry
                     </button>
-                    <button onclick="switchTab('cms')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1.5 rounded-lg text-xs transition border border-slate-200">
+                    <button onclick="switchTab('cms')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1.5 rounded-lg text-xs transition border border-slate-200 font-sans">
                         Back to Enquiry Pipeline
                     </button>
                 `;
             } else {
                 headerTitle.innerText = `Configure Document`;
                 actionsBlock.innerHTML = `
-                    <button onclick="saveGeneratorAsNewEnquiry()" class="w-full bg-[#1A365D] hover:bg-sky-850 text-white font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-md">
+                    <button onclick="saveGeneratorAsNewEnquiry()" class="w-full bg-[#1A365D] hover:bg-sky-850 text-white font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-md font-sans">
                         <i data-lucide="plus" class="w-4 h-4"></i> Save as New CRM Enquiry
                     </button>
                 `;
@@ -3145,6 +3039,7 @@
                 activeGeneratorActivities[idx][field] = parseFloat(value) || 0;
             } else if (field === 'room_in' || field === 'room_out') {
                 activeGeneratorActivities[idx][field] = value;
+                // Recompute nights
                 const rIn = activeGeneratorActivities[idx].room_in;
                 const rOut = activeGeneratorActivities[idx].room_out;
                 if (rIn && rOut) {
@@ -3344,15 +3239,15 @@
             const balanceVal = grandTotalSum - paymentVal;
 
             const totalsHtml = `
-                <tr class="bg-slate-50 font-bold border-t border-slate-200">
+                <tr class="bg-slate-50 font-bold border-t border-slate-200 font-sans">
                     <td colspan="5" class="py-2 px-1.5 text-right text-slate-700 uppercase tracking-wide">Total:</td>
                     <td class="py-2 px-1.5 text-right text-slate-950 font-black text-xs whitespace-nowrap pr-1.5">R ${formatZAR(grandTotalSum)}</td>
                 </tr>
-                <tr class="font-bold text-slate-700">
+                <tr class="font-bold text-slate-700 font-sans">
                     <td colspan="5" class="py-2 px-1.5 text-right">Payment Received:</td>
                     <td class="py-2 px-1.5 text-right text-green-700 whitespace-nowrap pr-1.5">- R ${formatZAR(paymentVal)}</td>
                 </tr>
-                <tr class="bg-[#1A365D] text-white font-black text-xs border-y border-slate-900">
+                <tr class="bg-[#1A365D] text-white font-black text-xs border-y border-slate-900 font-sans">
                     <td colspan="5" class="py-2.5 px-1.5 text-right uppercase tracking-wider">Balance Outstanding:</td>
                     <td class="py-2.5 px-1.5 text-right text-white font-black text-xs whitespace-nowrap pr-1.5">R ${formatZAR(balanceVal)}</td>
                 </tr>
@@ -3487,7 +3382,7 @@
             }
 
             container.innerHTML = termsPresetsList.map((preset, idx) => `
-                <div onclick="loadPresetIntoWorkspace(${idx})" class="group cursor-pointer bg-white hover:bg-sky-50 text-[#1A365D] border border-slate-200 hover:border-sky-200 pl-2.5 pr-1 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 transition">
+                <div onclick="loadPresetIntoWorkspace(${idx})" class="group cursor-pointer bg-white hover:bg-sky-50 text-[#1A365D] border border-slate-200 hover:border-sky-200 pl-2.5 pr-1 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 transition font-sans">
                     <span>${preset.name}</span>
                     <button onclick="deleteTermsPreset(${idx}, event)" class="p-0.5 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete Preset">
                         <i data-lucide="x" class="w-3 h-3"></i>
