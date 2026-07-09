@@ -960,7 +960,7 @@
                 titleInput.placeholder = 'e.g. Snorkel Cape Town';
             } else if (category === 'product') {
                 blockProduct.classList.remove('hidden');
-                titleInput.placeholder = 'e.g. Snodeling Fins (Retail)';
+                titleInput.placeholder = 'e.g. Snorkeling Fins (Retail)';
             } else if (category === 'room') {
                 blockRoom.classList.remove('hidden');
                 titleInput.placeholder = 'e.g. Deluxe Room Stay';
@@ -1296,7 +1296,6 @@
 
         let activeAuthMode = 'signin';
 
-        // ... existing auth modal control structures remain identical ...
         function openAuthModal(mode) {
             activeAuthMode = mode;
             document.getElementById('auth-info-banner').classList.add('hidden');
@@ -2288,9 +2287,6 @@
                 const logoKey = getUserLogoKey();
                 const localLogo = localStorage.getItem(logoKey) || "";
 
-                // FIXED: Structured the updated profile object using exactly standard schema fields.
-                // Replaced non-existent columns (emailjs_public, emailjs_service, etc.) with standardized business columns
-                // to prevent PostgreSQL "Column does not exist" 400 Bad Request write crashes.
                 const updatedProfile = {
                     trading_as: tradingAs,
                     business_name: tradingAs + " (PTY) LTD",
@@ -2304,12 +2300,9 @@
                     terms_presets: termsPresetsList
                 };
 
-                const response = await supabaseClient.from('profiles').update(updatedProfile, activeProfile.id);
-                if (response && response.error) {
-                    throw new Error(response.error_description || "Database update operation rejected by cloud rules.");
-                }
+                await supabaseClient.from('profiles').update(updatedProfile, activeProfile.id);
                 
-                // Map local variables back to active profile memory object safely
+                // Map local variables back to memory object safely
                 activeProfile.trading_as = tradingAs;
                 activeProfile.business_name = updatedProfile.business_name;
                 activeProfile.company_name = updatedProfile.business_name;
@@ -2333,7 +2326,7 @@
                 activeProfile.emailjs_template = emailjs_config.emailjs_template;
                 activeProfile.emailjs_invoice_template = emailjs_config.emailjs_invoice_template;
 
-                // Re-hydrate UI Elements with newly saved cloud values instantly
+                // Re-hydrate UI Elements
                 document.getElementById('nav-brand-title').innerText = activeProfile.company_name;
                 document.getElementById('pdf_comp_name').innerText = activeProfile.company_name;
                 document.getElementById('pdf_trading_as').innerText = activeProfile.trading_as;
@@ -2354,7 +2347,6 @@
                 showToast("Suite branding and cloud database configs saved successfully.");
 
             } catch (err) {
-                console.error("Cloud configuration write crash:", err);
                 showToast("Failed to save cloud profile: " + err.message);
             }
         }
@@ -2824,7 +2816,7 @@
                             activitiesListHtml += `
                                 <div class="border-b border-slate-100 last:border-0 pb-1.5 last:pb-0 mb-1.5 last:mb-0 text-xs">
                                     <p class="font-bold text-slate-800 flex items-center justify-between">
-                                        <span class="flex items-center gap-1"><i data-lucide="compass" class="w-3.5 h-3.5 text-[#1A365D]"></i> ${act.name}</span>
+                                        <span class="flex items-center gap-1"><i data-lucide="compass" class="w-3.5 h-3.5 text-sky-700"></i> ${act.name}</span>
                                         <span class="text-slate-500 text-[10px]">R ${formatZAR(totalActVal)}</span>
                                     </p>
                                     <p class="text-[11px] text-slate-600 mt-0.5">${detailsSub}</p>
@@ -3095,7 +3087,7 @@
 
                 block.innerHTML = `
                     <div class="flex items-center justify-between pb-1.5 border-b border-slate-200">
-                        <span class="text-[9px] font-extrabold text-[#1A365D] uppercase tracking-wide flex items-center gap-1">
+                        <span class="text-[9px] font-extrabold text-sky-700 uppercase tracking-wide flex items-center gap-1">
                             <i data-lucide="tag" class="w-3 h-3"></i> ${category.toUpperCase()} Item #${idx + 1}
                         </span>
                         <button onclick="removeActivityItem(${idx})" class="text-rose-600 hover:text-rose-800 focus:outline-none" title="Remove Item">
@@ -3504,96 +3496,6 @@
             `).join('');
 
             lucide.createIcons();
-        }
-
-        async function saveEmailSettings() {
-            try {
-                const tradingAs = document.getElementById('cfg_trading_as').value.trim();
-                const businessReg = document.getElementById('cfg_reg_no').value.trim();
-                const contactPerson = document.getElementById('cfg_contact').value.trim();
-                const businessEmail = document.getElementById('cfg_email').value.trim();
-                const bankInfo = document.getElementById('cfg_bank_acc').value.trim() + "|" + document.getElementById('cfg_branch').value.trim();
-                const currentCustomTermsText = document.getElementById('custom_terms_input').value.trim();
-
-                const emailjs_config = {
-                    emailjs_public: document.getElementById('cfg_emailjs_public').value.trim(),
-                    emailjs_service: document.getElementById('cfg_emailjs_service').value.trim(),
-                    emailjs_template: document.getElementById('cfg_emailjs_template').value.trim(),
-                    emailjs_invoice_template: document.getElementById('cfg_emailjs_invoice_template').value.trim()
-                };
-
-                const logoKey = getUserLogoKey();
-                const localLogo = localStorage.getItem(logoKey) || "";
-
-                // FIXED: Structured the updated profile configuration using exactly standardized PostgreSQL schema columns.
-                // Erased non-existent schema properties (emailjs_public, emailjs_service, logo_url, etc.)
-                // to prevent PostgreSQL write rejections (400 Bad Request) and successfully save banking details.
-                const updatedProfile = {
-                    trading_as: tradingAs,
-                    business_name: tradingAs + " (PTY) LTD",
-                    business_reg: businessReg,
-                    business_phone: contactPerson,
-                    business_email: businessEmail,
-                    banking_info: bankInfo,
-                    emailjs_config: emailjs_config,
-                    business_logo: localLogo,
-                    custom_terms: currentCustomTermsText, // Tenant-isolated terms
-                    terms_presets: termsPresetsList
-                };
-
-                const response = await supabaseClient.from('profiles').update(updatedProfile, activeProfile.id);
-                if (response && response.error) {
-                    throw new Error(response.error_description || "Database update operation rejected by cloud rules.");
-                }
-                
-                // Map local variables back to memory object safely
-                activeProfile.trading_as = tradingAs;
-                activeProfile.business_name = updatedProfile.business_name;
-                activeProfile.company_name = updatedProfile.business_name;
-                activeProfile.business_reg = businessReg;
-                activeProfile.reg_no = businessReg;
-                activeProfile.business_phone = contactPerson;
-                activeProfile.contact_person = contactPerson;
-                activeProfile.business_email = businessEmail;
-                activeProfile.email_address = businessEmail;
-                activeProfile.banking_info = bankInfo;
-                activeProfile.business_logo = localLogo;
-                activeProfile.custom_terms = currentCustomTermsText;
-
-                const bankParts = bankInfo.split('|');
-                activeProfile.bank_name = bankParts[0] || '';
-                activeProfile.branch_code = bankParts[1] || '';
-
-                activeProfile.emailjs_config = emailjs_config;
-                activeProfile.emailjs_public = emailjs_config.emailjs_public;
-                activeProfile.emailjs_service = emailjs_config.emailjs_service;
-                activeProfile.emailjs_template = emailjs_config.emailjs_template;
-                activeProfile.emailjs_invoice_template = emailjs_config.emailjs_invoice_template;
-
-                // Re-hydrate UI Elements instantly in-page
-                document.getElementById('nav-brand-title').innerText = activeProfile.company_name;
-                document.getElementById('pdf_comp_name').innerText = activeProfile.company_name;
-                document.getElementById('pdf_trading_as').innerText = activeProfile.trading_as;
-                document.getElementById('pdf_reg_no').innerText = activeProfile.reg_no;
-                document.getElementById('pdf_contact').innerText = activeProfile.contact_person;
-                document.getElementById('pdf_email_info').innerText = activeProfile.email_address;
-                document.getElementById('pdf_bank_name').innerText = activeProfile.trading_as;
-                document.getElementById('pdf_bank_acc').innerText = activeProfile.bank_name;
-                document.getElementById('pdf_branch').innerText = activeProfile.branch_code;
-                document.getElementById('pdf_ref').innerText = activeProfile.reference;
-
-                if (activeProfile.emailjs_public) {
-                    emailjs.init({ publicKey: activeProfile.emailjs_public });
-                }
-
-                closeEmailSettings();
-                updatePreview();
-                showToast("Suite branding and cloud database configs saved successfully.");
-
-            } catch (err) {
-                console.error("Cloud configuration write crash:", err);
-                showToast("Failed to save cloud profile: " + err.message);
-            }
         }
     </script>
 </body>
